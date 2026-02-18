@@ -1,0 +1,57 @@
+import React, { useEffect, useState } from "react";
+
+//  const toggleDarkMode = () =>{
+//     document.body.classList.toggle('dark-mode');
+//   };
+interface NavbarProps {
+  onAddNote: () => void;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ onAddNote }) => {
+  const [isDark, setIsDark] = useState(() => {
+    const currTheme = localStorage.getItem("theme") || "light";
+    return currTheme === "dark";
+  });
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", isDark);
+  }, [isDark]);
+
+  const toggleTheme = () => {
+    const newTheme = isDark ? "light" : "dark";
+    setIsDark(!isDark);    //setState is async so it will imediately not change
+    // document.documentElement.classList.toggle("dark", !isDark); Since I am using isDark as a parameter in useEffect, it will run every time the page is reloaded so there is no need for this
+
+    localStorage.setItem("theme", newTheme);
+  };
+
+  return (
+    // <header className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
+    <header className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 bg-white/80 dark:bg-black backdrop-blur-md border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
+      <div className="flex items-center gap-2">
+        <h3 className="text-xl font-bold bg-linear-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">Note</h3>
+      </div>
+      <div className="flex items-center gap-3">
+        <button
+          onClick={onAddNote}
+          className="px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-full hover:bg-purple-700 transition-colors shadow-lg shadow-purple-500/30 active:scale-95"
+        >
+          Add Note
+        </button>
+        <button
+          onClick={toggleTheme}
+          className="p-2 text-gray-500 hover:text-gray-900 dark:text-gray-400 hover:dark:text-gray-100 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 hover:dark:bg-gray-700 rounded-full transition-all active:scale-95"
+          aria-label="Toggle theme"
+        >
+          {isDark ? (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" /><line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" /><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" /></svg>
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>
+          )}
+        </button>
+      </div>
+    </header>
+  );
+};
+
+export default Navbar;

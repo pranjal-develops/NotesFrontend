@@ -1,0 +1,42 @@
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(2px); /* Apply blur effect */
+  background-color: rgba(0, 0, 0, 0.1); /* Black with 30% opacity */
+}
+
+@keyframes popup-in {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes popup-out {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+.animate-popup-in {
+  animation: popup-in 0.3s ease-out forwards;
+}
+
+.animate-popup-out {
+  animation: popup-out 0.3s ease-out forwards;
+}

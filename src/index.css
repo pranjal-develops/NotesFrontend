@@ -1,0 +1,30 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    /* Optional: Add box-sizing here if you want it globally */
+    box-sizing: border-box; 
+  }
+}
+@theme {
+    --breakpoint-2xl: 1850px;
+    --breakpoint-2.5xl: 1950px;
+}
+/* #root{
+    background-color: black;
+    color: white;
+} */
+ 
+/* styles.css */
+/* body {
+  background-color: white; /* Light mode background */
+  /* color: black; Light mode text color */
+/* } */
+
+/* body.dark-mode {
+  background-color: black; /* Dark mode background */
+  /* color: white; Dark mode text color */
+/* } */ 
