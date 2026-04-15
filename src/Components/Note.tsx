@@ -25,7 +25,7 @@ interface noteProps {
 const Note: React.FC<noteProps> = ({note, onClk}) => {
   return (
     // <div className='group relative flex flex-col h-70 p-6 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer overflow-hidden' onClick={onClk}>
-    <div className='group relative flex flex-col h-70 p-6 bg-white dark:bg-[#13111C] rounded-2xl border border-gray-200 dark:border-[rgba(255,255,255,0.09)] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer overflow-hidden' onClick={onClk}>
+    <div className='group relative flex flex-col max-h-100 p-6 bg-white dark:bg-[hsl(0,0%,10%)] rounded-2xl border border-[hsl(0,0%,92%)] dark:border-[hsl(0,0%,15%)] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer overflow-hidden' onClick={onClk}>
       <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-purple-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-3 line-clamp-2 leading-tight">
         {note.title}

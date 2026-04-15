@@ -27,14 +27,16 @@ const Navbar: React.FC<NavbarProps> = ({ onAddNote }) => {
 
   return (
     // <header className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
-    <header className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 bg-white/80 dark:bg-black backdrop-blur-md border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
+    // <header className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 bg-white/80 dark:bg-black backdrop-blur-md border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
+    <header className="sticky top-0 bg-transparent flex items-center justify-between px-6 py-4">
       <div className="flex items-center gap-2">
         <h3 className="text-xl font-bold bg-linear-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">Note</h3>
       </div>
+      <div className="search w-[40%] h-8.75 bg-black border rounded-full border-black"></div>
       <div className="flex items-center gap-3">
         <button
           onClick={onAddNote}
-          className="px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-full hover:bg-purple-700 transition-colors shadow-lg shadow-purple-500/30 active:scale-95"
+          className="px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-full hover:bg-purple-700 transition-colors shadow-lg shadow-purple-500/30 active:scale-95 animate-pulse"
         >
           Add Note
         </button>

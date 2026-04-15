@@ -6,7 +6,7 @@
     margin: 0;
     padding: 0;
     /* Optional: Add box-sizing here if you want it globally */
-    box-sizing: border-box; 
+    /* box-sizing: border-box;  */
   }
 }
 @theme {
