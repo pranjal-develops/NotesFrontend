@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react";
+import Search from "./Search";
+import { GiHamburgerMenu } from "react-icons/gi";
 
 //  const toggleDarkMode = () =>{
 //     document.body.classList.toggle('dark-mode');
 //   };
 interface NavbarProps {
-  onAddNote: () => void;
+  onAddNote: () => void,
+  onClk: ()=>void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ onAddNote }) => {
+const Navbar: React.FC<NavbarProps> = ({ onAddNote,onClk }) => {
+
   const [isDark, setIsDark] = useState(() => {
     const currTheme = localStorage.getItem("theme") || "light";
     return currTheme === "dark";
@@ -30,9 +34,10 @@ const Navbar: React.FC<NavbarProps> = ({ onAddNote }) => {
     // <header className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 bg-white/80 dark:bg-black backdrop-blur-md border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
     <header className="sticky top-0 bg-transparent flex items-center justify-between px-6 py-4">
       <div className="flex items-center gap-2">
+        <button className="cursor-pointer bg-zinc-100 rounded-xl p-2 hover:bg-white" onClick={onClk}><GiHamburgerMenu /></button>
         <h3 className="text-xl font-bold bg-linear-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">Note</h3>
       </div>
-      <div className="search w-[40%] h-8.75 bg-black border rounded-full border-black"></div>
+      <Search/>
       <div className="flex items-center gap-3">
         <button
           onClick={onAddNote}

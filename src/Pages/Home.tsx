@@ -5,6 +5,7 @@ import axios from "axios";
 import Add from "../Components/Add";
 import Note from "../Components/Note";
 import DrawingCanvas from "../Components/Canvas";
+import Sidebar from "../Components/Sidebar";
 
 interface note {
   id: number;
@@ -17,6 +18,7 @@ function Home() {
   const [loading, setLoading] = useState<boolean>(false);
   const [editingnote, setEditingnote] = useState<note | null>(null);
   const [addnote, setAddnote] = useState<boolean>(false);
+  const [sideBarOpen, setSideBarOpen] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,8 +54,10 @@ function Home() {
   return (
     <>
       <div className="flex flex-col h-screen w-full bg-[hsl(0,0%,90%)] text-gray-900 dark:bg-black dark:text-gray-100 transition-colors duration-500">
-        <Navbar onAddNote={() => setAddnote(true)} />
+        <Navbar onAddNote={() => setAddnote(true)} onClk={()=>setSideBarOpen(!sideBarOpen)} />
         {/* <main className="flex-1 overflow-y-auto px-4 py-8 sm:px-6 lg:px-8"> */}
+        <div className="flex overflow-hidden h-full">
+          <Sidebar isOpen={sideBarOpen} />
         <main className="flex-1 overflow-y-auto">
           {/* <div className="max-w-7xl mx-auto h-full"> */}
           {/* <div className=" p-3 bg-[hsl(0,0%,95%)] rounded-3xl w-full mx-auto h-full"> */}
@@ -76,6 +80,7 @@ function Home() {
             )}
           </div>
         </main>
+        </div>
       </div>
       {/* <DrawingCanvas /> */}
       {/* Render the edit popup if there's a note to edit */}
