@@ -1,7 +1,7 @@
 import React from 'react'
 
 interface noteProps {
-  note: { id: number; title: string; description: string };
+  note: { id: number; title: string; description: string ; drawingData: string | undefined };
   onClk: () => void;
 }
 
@@ -34,6 +34,11 @@ const Note: React.FC<noteProps> = ({note, onClk}) => {
       <div className="flex-1 overflow-y-auto text-gray-600 dark:text-gray-400 text-sm leading-relaxed scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-800 pr-2">
         {note.description}
       </div>
+      {note.drawingData && (
+  <div className="mt-3 mb-2 rounded-lg border border-gray-100 dark:border-gray-800 overflow-hidden bg-gray-50 dark:bg-gray-800/50">
+    <img src={note.drawingData} alt="Note drawing" className="w-full h-auto max-h-40 object-contain" />
+  </div>
+)}
 
       <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300">
         <span className="text-xs font-medium text-purple-600 dark:text-purple-400">Click to edit</span>

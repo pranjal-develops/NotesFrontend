@@ -1,18 +1,21 @@
 import axios from 'axios'
-import React, { useState } from 'react'
-
-interface AddProp {
-  onClose: () => void
-}
-
-const Add: React.FC<AddProp> = ({ onClose }) => {
+import React, { useState, useRef } from 'react'
+import { useDispatch } from 'react-redux'
+import { setAddNote } from '../store/slice/noteSlice';
+import DrawingCanvas, {type CanvasHandle} from './Canvas';
+const Add = () => {
+  const dispatch = useDispatch();
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [isClosing, setIsClosing] = useState(false)
+  const [showCanvas, setShowCanvas] = useState(false);
+
+  const canvasRef = useRef<CanvasHandle>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newnote = { title, description };
+    const drawingData = showCanvas ? canvasRef.current?.getSaveData() : null;
+    const newnote = { title, description, drawingData };
     try {
       await axios.post(`http://localhost:8080/api/notes`, newnote);
       closePopup();
@@ -24,14 +27,14 @@ const Add: React.FC<AddProp> = ({ onClose }) => {
   const closePopup = () => {
     setIsClosing(true)
     setTimeout(() => {
-      onClose();
+      dispatch(setAddNote());
       setIsClosing(false);
     }, 200);
   }
 
   return (
     <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${isClosing ? 'animate-out fade-out duration-200' : 'animate-in fade-in duration-200'}`}>
-      <div
+      <button
         className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
         onClick={closePopup}
       />
@@ -50,7 +53,8 @@ const Add: React.FC<AddProp> = ({ onClose }) => {
         <form onSubmit={handleSubmit} className="p-6">
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Title{' '}
               <input
                 type="text"
                 value={title}
@@ -58,10 +62,12 @@ const Add: React.FC<AddProp> = ({ onClose }) => {
                 placeholder="Enter note title..."
                 className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder-gray-400"
                 autoFocus
-              />
+                />
+                </label>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Description{' '}
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -69,10 +75,19 @@ const Add: React.FC<AddProp> = ({ onClose }) => {
                 rows={6}
                 className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder-gray-400 resize-none"
               />
+                </label>
             </div>
+            {showCanvas && (<DrawingCanvas ref={canvasRef} />)}
           </div>
 
           <div className="mt-8 flex items-center justify-end gap-3">
+            { (<button
+              type="button"
+              onClick={()=>setShowCanvas(!showCanvas)}
+              className="px-4 py-2text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all"
+            >
+              {showCanvas ? '− Remove Drawing' : '+ Add Drawing'}
+            </button>)}
             <button
               type="button"
               onClick={closePopup}
