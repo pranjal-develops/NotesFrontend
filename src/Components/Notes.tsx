@@ -1,11 +1,6 @@
 import React from 'react'
 import Note from './Note';
-
-interface note {
-  id: number;
-  title: string;
-  description: string;
-}
+import type {Note as note} from '../types';
 
 interface NoteProps{
     notes: note[],

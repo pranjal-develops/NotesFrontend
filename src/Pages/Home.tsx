@@ -3,22 +3,15 @@ import EditPopup from "../Components/EditPopUp";
 import Navbar from "../Components/Navbar";
 import axios from "axios";
 import Add from "../Components/Add";
-import Note from "../Components/Note";
 import DrawingCanvas from "../Components/Canvas";
 import Sidebar from "../Components/Sidebar";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import type { RootState } from "../store/store";
-import { setAddNote } from "../store/slice/noteSlice";
 import Notes from "../Components/Notes";
-
-interface note {
-  id: number;
-  title: string;
-  description: string;
-}
+import type { Note as note } from "../types";
+import AddButton from "../Components/AddButton";
 
 function Home() {
-  const dispatch = useDispatch();
   const { searchText, addNote } = useSelector((state: RootState) => state.note);
 
   const [notes, setnotes] = useState<note[]>([]);
@@ -44,8 +37,6 @@ function Home() {
     fetchData();
   }, [addNote, searchText]);
 
-  // if (loading) return <>Loading...</>;
-
   const handleUpdate = (updatednote: note) => {
     setnotes(
       notes.map((note) => (note.id === updatednote.id ? updatednote : note)),
@@ -68,7 +59,7 @@ function Home() {
         {/* <main className="flex-1 overflow-y-auto px-4 py-8 sm:px-6 lg:px-8"> */}
         <div className="flex overflow-hidden h-full">
           <Sidebar />
-          <main className="flex-1 w-auto h-full overflow-y-auto p-3 md:mr-2 md:mb-2 bg-[hsl(0,0%,95%)] dark:bg-[hsl(0,0%,5%)] md:rounded-3xl ">
+          <main className="relative flex-1 w-auto h-full overflow-y-auto p-3 md:mr-2 md:mb-2 bg-[hsl(0,0%,95%)] dark:bg-[hsl(0,0%,5%)] md:rounded-3xl ">
             {/* <div className="max-w-7xl mx-auto h-full"> */}
             {/* <div className=" p-3 bg-[hsl(0,0%,95%)] rounded-3xl w-full mx-auto h-full"> */}
             {/* <div className=" p-3 bg-[hsl(0,0%,95%)] dark:bg-[hsl(0,0%,5%)] rounded-l-3xl w-full h-full"> */}
@@ -77,7 +68,8 @@ function Home() {
               loading={loading}
               setEditingnote={setEditingnote}
             />
-            <DrawingCanvas />
+            {/* <DrawingCanvas /> */}
+            <AddButton/>
             {/* </div> */}
           </main>
         </div>

@@ -51,7 +51,7 @@ const Add = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="p-6">
-          <div className="space-y-4">
+          <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-800">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Title{' '}
@@ -72,39 +72,50 @@ const Add = () => {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Write your thoughts..."
-                rows={6}
+                rows={4}
                 className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder-gray-400 resize-none"
               />
                 </label>
             </div>
-            {showCanvas && (<DrawingCanvas ref={canvasRef} />)}
-          </div>
 
-          <div className="mt-8 flex items-center justify-end gap-3">
-            { (<button
-              type="button"
-              onClick={()=>setShowCanvas(!showCanvas)}
-              className="px-4 py-2text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all"
-            >
-              {showCanvas ? '− Remove Drawing' : '+ Add Drawing'}
-            </button>)}
+            <div className="pt-2">
+              <button
+                type="button"
+                onClick={() => setShowCanvas(!showCanvas)}
+                className="flex items-center gap-2 text-sm font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors group"
+              >
+                <span className="text-lg group-hover:scale-110 transition-transform">
+                  {showCanvas ? '−' : '+'}
+                </span>
+                {showCanvas ? 'Remove Drawing' : 'Add Drawing'}
+              </button>
+
+              {showCanvas && (
+                <div className="mt-3 animate-in slide-in-from-top-2 duration-200">
+                  <DrawingCanvas ref={canvasRef} />
+                </div>
+              )}
+            </div>
+              </div>
+
+          <div className="mt-8 flex items-center justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-800">
             <button
               type="button"
               onClick={closePopup}
-              className="px-4 py-2text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all"
-            >
+              className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all"
+              >
               Cancel
             </button>
             <button
               type="submit"
               className="px-4 py-2 text-sm font-medium text-white bg-purple-600 border border-transparent rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 shadow-lg shadow-purple-500/30 transition-all"
-            >
+              >
               Create Note
             </button>
           </div>
-        </form>
+              </form>
+              </div>
       </div>
-    </div>
   )
 }
 

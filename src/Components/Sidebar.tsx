@@ -5,16 +5,16 @@ import {SetSideBarOpen} from "../store/slice/uiSlice"
 
 const sideElements = [
   {
-    icon: "ai",
-    name: "this is name",
+    icon: "📝",
+    name: "All Notes",
   },
   {
-    icon: "ai",
-    name: "this is name",
+    icon: "⭐",
+    name: "Favorites",
   },
   {
-    icon: "ai",
-    name: "this is name",
+    icon: "🗑️",
+    name: "Trash",
   },
 ];
 
@@ -26,8 +26,8 @@ const Sidebar = () => {
       <aside
         className={`h-full md:flex flex-col justify-start p-5 ${isSidebarOpen ? "w-[20%]" : "w-auto hidden"}`}
       >
-        {sideElements.map((sideElement) => (
-          <div className="flex flex-row px-2 py-1 gap-2" key={sideElement.icon}>
+        {sideElements.map((sideElement,index) => (
+          <div className="flex flex-row px-2 py-1 gap-2" key={`${sideElement.name}-${index}`}>
             <h1>{sideElement.icon}</h1>
             {isSidebarOpen && <h1>{sideElement.name}</h1>}
           </div>
