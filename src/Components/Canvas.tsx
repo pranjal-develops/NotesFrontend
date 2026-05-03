@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState, useImperativeHandle, forwardRef } from 'react';
 
 interface DrawingCanvasProps {
-  initialData?: string;
+  initialData?: string | null;
 }
 
 export interface CanvasHandle {

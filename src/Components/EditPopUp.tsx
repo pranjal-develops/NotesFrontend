@@ -1,11 +1,12 @@
 import React, { useRef, useState } from "react";
 import axios from "axios";
 import DrawingCanvas , {type CanvasHandle} from "./Canvas";
+import type { Note as NoteType } from '../types';
 
 interface EditPopupProps {
-  note: { id: number; title: string; description: string; drawingData: string | undefined };
+  note: NoteType;
   onClose: () => void;
-  onUpdate: (updatednote: { id: number; title: string; description: string; drawingData: string | null | undefined }) => void;
+  onUpdate: (updatednote: NoteType ) => void;
   onDelete: (id:number) => void;
 }
 
@@ -79,7 +80,7 @@ const EditPopup: React.FC<EditPopupProps> = ({ note, onClose, onUpdate, onDelete
         </div>
   {/* <h2 className="text-xl font-semibold mb-4">Edit note</h2> */}
   <form onSubmit={handleSubmit} className="p-6">
-          <div className="space-y-4">
+          <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-800">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
               <input
@@ -90,36 +91,46 @@ const EditPopup: React.FC<EditPopupProps> = ({ note, onClose, onUpdate, onDelete
                 className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder-gray-400"
               />
             </div>
-    <div>
+            <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Description"
-                rows={6}
+                rows={4}
                 className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder-gray-400 resize-none"
               />
             </div>
-            {showCanvas && (
-              <DrawingCanvas ref={canvasRef} initialData={note.drawingData} />
-            )}
+
+            <div className="pt-2">
+              <button
+                type="button"
+                onClick={() => setShowCanvas(!showCanvas)}
+                className="flex items-center gap-2 text-sm font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors group"
+              >
+                <span className="text-lg group-hover:scale-110 transition-transform">
+                  {showCanvas ? '−' : '+'}
+                </span>
+                {showCanvas ? 'Remove Drawing' : 'Add Drawing'}
+              </button>
+
+              {showCanvas && (
+                <div className="mt-3 animate-in slide-in-from-top-2 duration-200">
+                  <DrawingCanvas ref={canvasRef} initialData={note.drawingData} />
+                </div>
+              )}
+            </div>
           </div>
- <div className="mt-8 flex items-center justify-between gap-3">
+
+          <div className="mt-8 flex items-center justify-between gap-3 pt-4 border-t border-gray-100 dark:border-gray-800">
             <button
               type="button"
               onClick={handleDelete}
               className="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all"
             >
-              Delete Note
+              Delete
             </button>
             <div className="flex gap-3">
-              <button
-                type="button"
-                onClick={()=>setShowCanvas(!showCanvas)}
-                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all"
-              >
-              {showCanvas ? '− Remove Drawing' : '+ Add Drawing'}
-              </button>
               <button
                 type="button"
                 onClick={closePopup}
@@ -131,7 +142,7 @@ const EditPopup: React.FC<EditPopupProps> = ({ note, onClose, onUpdate, onDelete
                 type="submit"
                 className="px-4 py-2 text-sm font-medium text-white bg-purple-600 border border-transparent rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 shadow-lg shadow-purple-500/30 transition-all"
               >
-                Save Changes
+                Save
               </button>
             </div>
     {/* <button type="button" onClick={closePopup} className="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition">

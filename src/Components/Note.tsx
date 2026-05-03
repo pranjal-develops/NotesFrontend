@@ -1,7 +1,8 @@
-import React from 'react'
+import React from 'react';
+import type {Note as NoteType} from '../types';
 
 interface noteProps {
-  note: { id: number; title: string; description: string ; drawingData: string | undefined };
+  note: NoteType;
   onClk: () => void;
 }
 
@@ -35,7 +36,7 @@ const Note: React.FC<noteProps> = ({note, onClk}) => {
         {note.description}
       </div>
       {note.drawingData && (
-  <div className="mt-3 mb-2 rounded-lg border border-gray-100 dark:border-gray-800 overflow-hidden bg-gray-50 dark:bg-gray-800/50">
+  <div className="mt-3 mb-2 rounded-lg border border-gray-100 dark:border-gray-800 overflow-hidden bg-gray-50 dark:bg-[hsl(0,0%,15%)]">
     <img src={note.drawingData} alt="Note drawing" className="w-full h-auto max-h-40 object-contain" />
   </div>
 )}
