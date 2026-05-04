@@ -3,19 +3,36 @@ import React, { useState, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { setAddNote } from '../store/slice/noteSlice';
 import DrawingCanvas, {type CanvasHandle} from './Canvas';
+import { BsPinAngleFill } from 'react-icons/bs';
+
+const COLORS = [
+  { name: 'Default', value: 'transparent' },
+  { name: 'Red', value: '#f28b82' },
+  { name: 'Orange', value: '#fbbc04' },
+  { name: 'Yellow', value: '#fff475' },
+  { name: 'Green', value: '#ccff90' },
+  { name: 'Teal', value: '#a7ffeb' },
+  { name: 'Blue', value: '#cbf0f8' },
+  { name: 'Dark Blue', value: '#aecbfa' },
+  { name: 'Purple', value: '#d7aefb' },
+  { name: 'Pink', value: '#fdcfe8' },
+];
+
 const Add = () => {
   const dispatch = useDispatch();
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [isClosing, setIsClosing] = useState(false)
   const [showCanvas, setShowCanvas] = useState(false);
+  const [color, setColor] = useState('transparent');
+  const [isPinned, setIsPinned] = useState(false);
 
   const canvasRef = useRef<CanvasHandle>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const drawingData = showCanvas ? canvasRef.current?.getSaveData() : null;
-    const newnote = { title, description, drawingData };
+    const newnote = { title, description, drawingData, color, isPinned };
     try {
       await axios.post(`http://localhost:8080/api/notes`, newnote);
       closePopup();
@@ -39,15 +56,61 @@ const Add = () => {
         onClick={closePopup}
       />
 
-      <div className={`relative w-full max-w-lg bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden transform transition-all ${isClosing ? 'scale-95 opacity-0' : 'scale-100 opacity-100'}`}>
-        <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between bg-gray-50/50 dark:bg-gray-800/50">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Add New Note</h2>
+<div 
+  className={`w-full max-w-lg 
+  /* Mobile: Slides from bottom, rounded only at top */
+  fixed bottom-0 left-0 right-0 rounded-t-3xl 
+  /* Desktop: Centered */
+  md:relative md:bottom-auto md:rounded-2xl 
+  
+  bg-white dark:bg-gray-900 shadow-2xl overflow-hidden transform transition-all duration-300 md:duration-150 ease-out
+  ${isClosing ? 'translate-y-full md:translate-y-0 md:scale-95 md:opacity-0' : 'translate-y-0 md:scale-100 md:opacity-100'}`}
+  style={{ 
+    backgroundColor: color !== 'transparent' ? color : undefined 
+  }}
+>       
+{/* Drag Handle for Mobile */}
+  <div className="w-12 h-1.5 bg-gray-300 dark:bg-gray-700 rounded-full mx-auto mt-3 mb-1 md:hidden" />
+ <div className="flex-col border-b border-gray-100 dark:border-gray-800">
+        {/* <div className="px-6 py-4 flex items-center justify-between bg-gray-50/50 dark:bg-gray-800"> */}
+        {/* <div className="px-6 py-4 flex items-center justify-between"> */}
+          {/* <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Add New Note</h2> */}
+          <div className="sticky top-0 z-10 px-6 py-4 flex items-center justify-between backdrop-blur-md bg-white/70 dark:bg-gray-900/70">
+  <h2 className="text-sm font-bold uppercase tracking-widest text-gray-500">Add New Note</h2>
           <button
             onClick={closePopup}
             className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
+            </div>
+            <div className="flex items-center justify-evenly px-2">
+      <div className="flex items-center gap-4 py-2">
+  <div className="flex flex-wrap gap-2">
+    {COLORS.map((c) => (
+      <button
+        key={c.value}
+        type="button"
+        onClick={() => setColor(c.value)}
+        className={`w-6 h-6 rounded-full border-2 transition-transform hover:scale-110 ${
+          color === c.value ? 'border-purple-500 scale-110' : 'border-transparent'
+        }`}
+        style={{ backgroundColor: c.value === 'transparent' ? 'white' : c.value }}
+        title={c.name}
+      />
+    ))}
+  </div>
+  </div>
+  <button
+    type="button"
+    onClick={() => setIsPinned(!isPinned)}
+    className={`p-2 rounded-full transition-colors ${
+      isPinned ? 'text-purple-600 bg-purple-50' : 'text-gray-400 hover:bg-gray-100'
+    }`}
+  >
+    <BsPinAngleFill size={20} />
+  </button>
+</div>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6">
@@ -60,7 +123,8 @@ const Add = () => {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter note title..."
-                className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder-gray-400"
+                className="w-full text-2xl font-bold bg-transparent border-none outline-none placeholder-gray-400 dark:text-gray-100"
+                // className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder-gray-400"
                 autoFocus
                 />
                 </label>

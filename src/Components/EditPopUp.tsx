@@ -1,32 +1,49 @@
 import React, { useRef, useState } from "react";
 import axios from "axios";
-import DrawingCanvas , {type CanvasHandle} from "./Canvas";
+import DrawingCanvas, { type CanvasHandle } from "./Canvas";
 import type { Note as NoteType } from '../types';
+import { BsPinAngleFill } from "react-icons/bs";
 
 interface EditPopupProps {
   note: NoteType;
   onClose: () => void;
-  onUpdate: (updatednote: NoteType ) => void;
-  onDelete: (id:number) => void;
+  onUpdate: (updatednote: NoteType) => void;
+  onDelete: (id: number) => void;
 }
+
+const COLORS = [
+  { name: 'Default', value: 'transparent' },
+  { name: 'Red', value: '#f28b82' },
+  { name: 'Orange', value: '#fbbc04' },
+  { name: 'Yellow', value: '#fff475' },
+  { name: 'Green', value: '#ccff90' },
+  { name: 'Teal', value: '#a7ffeb' },
+  { name: 'Blue', value: '#cbf0f8' },
+  { name: 'Dark Blue', value: '#aecbfa' },
+  { name: 'Purple', value: '#d7aefb' },
+  { name: 'Pink', value: '#fdcfe8' },
+];
 
 const EditPopup: React.FC<EditPopupProps> = ({ note, onClose, onUpdate, onDelete }) => {
   const [title, setTitle] = useState(note.title);
   const [description, setDescription] = useState(note.description);
   const [isClosing, setIsClosing] = useState(false)
   const [showCanvas, setShowCanvas] = useState(note.drawingData ? true : false);
+  const [color, setColor] = useState(note.color || 'transparent');
+  const [isPinned, setIsPinned] = useState(note.pinned || false);
+
 
   const canvasRef = useRef<CanvasHandle>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const updatednote = { ...note, title, description, drawingData: showCanvas ? canvasRef.current?.getSaveData() : note.drawingData };
+
+    const updatednote = { ...note, title, description, drawingData: showCanvas ? canvasRef.current?.getSaveData() : note.drawingData, color, isPinned };
 
     try {
       const response = await axios.put(`http://localhost:8080/api/notes/${note.id}`, updatednote);
       console.log(response);
-      
+
       onUpdate(updatednote);
       onClose(); // Close the popup after updating
     } catch (error) {
@@ -34,11 +51,11 @@ const EditPopup: React.FC<EditPopupProps> = ({ note, onClose, onUpdate, onDelete
     }
   };
 
-  const handleDelete = async() =>{
+  const handleDelete = async () => {
     await onDelete(note.id);
     onClose();
   }
-  
+
   // const deletenote = async () =>{
   //   try{
   //     await axios.delete(`http://localhost:8080/api/notes/${note.id}`);
@@ -49,11 +66,11 @@ const EditPopup: React.FC<EditPopupProps> = ({ note, onClose, onUpdate, onDelete
   //   }
   // }
 
-  const closePopup = () =>{
+  const closePopup = () => {
     setIsClosing(true);
-    setTimeout(()=>{
-        onClose();
-        setIsClosing(false);
+    setTimeout(() => {
+      onClose();
+      setIsClosing(false);
     }, 300);
 
   }
@@ -67,19 +84,63 @@ const EditPopup: React.FC<EditPopupProps> = ({ note, onClose, onUpdate, onDelete
         onClick={closePopup}
       />
 
-     <div className={`relative w-full max-w-lg bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden transform transition-all ${isClosing ? 'scale-95 opacity-0' : 'scale-100 opacity-100'}`}>
-        <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between bg-gray-50/50 dark:bg-gray-800/50">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Edit Note</h2>
-          <button
-            type="button"
-            onClick={closePopup}
-            className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 transition-colors"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-          </button>
+      <div 
+  className={`w-full max-w-lg 
+  /* Mobile: Slides from bottom, rounded only at top */
+  fixed bottom-0 left-0 right-0 rounded-t-3xl 
+  /* Desktop: Centered */
+  md:relative md:bottom-auto md:rounded-2xl 
+  
+  bg-white dark:bg-gray-900 shadow-2xl overflow-hidden transform transition-all duration-300 md:duration-150 ease-out
+  ${isClosing ? 'translate-y-full md:translate-y-0 md:scale-95 md:opacity-0' : 'translate-y-0 md:scale-100 md:opacity-100'}`}
+  style={{ 
+    backgroundColor: color !== 'transparent' ? color : undefined 
+  }}
+>
+  {/* Drag Handle for Mobile */}
+  <div className="w-12 h-1.5 bg-gray-300 dark:bg-gray-700 rounded-full mx-auto mt-3 mb-1 md:hidden" />
+        <div className="flex-col border-b border-gray-100 dark:border-gray-800">
+
+          {/* <div className="px-6 py-4  flex items-center justify-between "> */}
+            {/* <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Edit Note</h2> */}
+            <div className="sticky top-0 z-10 px-6 py-4 flex items-center justify-between backdrop-blur-md bg-white/70 dark:bg-gray-900/70">
+  <h2 className="text-sm font-bold uppercase tracking-widest text-gray-500">Edit Note</h2>
+            <button
+              type="button"
+              onClick={closePopup}
+              className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+          </div>
+          <div className="flex items-center justify-evenly px-2">
+            <div className="flex items-center gap-4 py-2">
+              <div className="flex flex-wrap gap-2">
+                {COLORS.map((c) => (
+                  <button
+                    key={c.value}
+                    type="button"
+                    onClick={() => setColor(c.value)}
+                    className={`w-6 h-6 rounded-full border-2 transition-transform hover:scale-110 ${color === c.value ? 'border-purple-500 scale-110' : 'border-transparent'
+                      }`}
+                    style={{ backgroundColor: c.value === 'transparent' ? 'white' : c.value }}
+                    title={c.name}
+                  />
+                ))}
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsPinned(!isPinned)}
+              className={`p-2 rounded-full transition-colors ${isPinned ? 'text-purple-600 bg-purple-50' : 'text-gray-400 hover:bg-gray-100'
+                }`}
+            >
+              <BsPinAngleFill size={20} />
+            </button>
+          </div>
         </div>
-  {/* <h2 className="text-xl font-semibold mb-4">Edit note</h2> */}
-  <form onSubmit={handleSubmit} className="p-6">
+        {/* <h2 className="text-xl font-semibold mb-4">Edit note</h2> */}
+        <form onSubmit={handleSubmit} className="p-6">
           <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-800">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
@@ -88,7 +149,8 @@ const EditPopup: React.FC<EditPopupProps> = ({ note, onClose, onUpdate, onDelete
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Title"
-                className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder-gray-400"
+                className="w-full text-2xl font-bold bg-transparent border-none outline-none placeholder-gray-400 dark:text-gray-100"
+                // className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder-gray-400"
               />
             </div>
             <div>
@@ -145,12 +207,12 @@ const EditPopup: React.FC<EditPopupProps> = ({ note, onClose, onUpdate, onDelete
                 Save
               </button>
             </div>
-    {/* <button type="button" onClick={closePopup} className="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition">
+            {/* <button type="button" onClick={closePopup} className="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition">
       Cancel
     </button> */}
-  </div>
-  </form>
-</div>
+          </div>
+        </form>
+      </div>
 
 
 
